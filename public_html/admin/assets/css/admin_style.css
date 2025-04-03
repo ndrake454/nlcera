@@ -1,0 +1,45 @@
+/* admin/assets/css/admin_style.css */
+
+body {
+    font-size: .875rem; /* Slightly smaller base font */
+     background-color: #f8f9fa; /* Light grey background */
+}
+
+.admin-container {
+     min-height: calc(100vh - 56px - 57px); /* Viewport height minus navbar and footer height */
+}
+
+.admin-footer {
+    font-size: 0.8em;
+}
+
+/* Optional Sidebar Styling (if you add one later) */
+/*
+.sidebar {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+  padding: 48px 0 0;
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+.sidebar-sticky {
+  position: relative;
+  top: 0;
+  height: calc(100vh - 48px);
+  padding-top: .5rem;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+*/
+
+/* Make sure content doesn't overlap sticky navbar */
+main {
+    padding-top: 1rem;
+}
+
+/* Style flash messages */
+.alert {
+    margin-bottom: 1rem;
+}

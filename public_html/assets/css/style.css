@@ -1,0 +1,267 @@
+/* assets/css/style.css */
+
+body {
+    padding-bottom: 60px; /* Prevent content from hiding behind footer */
+    background-color: #f8f9fa; /* Light background */
+}
+
+.main-content {
+    min-height: calc(100vh - 180px); /* Adjust based on header/footer height */
+}
+
+.footer {
+    /* position: absolute; */ /* Use sticky-bottom on body/wrapper if needed */
+    /* bottom: 0; */
+    /* width: 100%; */
+    background-color: #343a40; /* Dark footer */
+}
+
+/* Category Cards */
+.category-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    border: 1px solid #dee2e6;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: #0d6efd; /* Primary color border on hover */
+    color: #0d6efd;
+}
+
+.category-icon {
+    font-size: 3rem; /* Adjust icon size */
+    color: #0d6efd; /* Bootstrap primary color */
+}
+
+.category-card:hover .category-icon {
+     color: #0a58ca; /* Darker primary on hover */
+}
+
+/* Protocol Step Styling */
+.protocol-content {
+    background-color: #fff; /* White background for protocol area */
+}
+
+.protocol-step {
+    border: 1px solid #e9ecef;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Indentation for nested steps (adjust padding as needed) */
+.protocol-step.level-1 { margin-left: 20px; border-left: 3px solid #cfe2ff; }
+.protocol-step.level-2 { margin-left: 40px; border-left: 3px solid #b6d4fe; }
+.protocol-step.level-3 { margin-left: 60px; border-left: 3px solid #9ec5fe; }
+/* Add more levels if necessary */
+
+.step-header {
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.step-number {
+    display: inline-block;
+    background-color: #0d6efd; /* Primary color */
+    color: white;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    text-align: center;
+    font-size: 0.9em;
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+.step-title {
+    flex-grow: 1;
+}
+
+.provider-levels .badge {
+    font-size: 0.75em;
+}
+
+.step-content ul {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem; /* Indent list items */
+}
+.step-content ul li {
+    margin-bottom: 0.3rem;
+}
+
+
+/* Specific Step Type Styling */
+.protocol-step.type-entry { border-top: 3px solid #6c757d; } /* Gray top border for entry */
+.protocol-step.type-question_yes_no { background-color: #fffbe6; border-color: #ffe58f; } /* Light yellow for questions */
+.protocol-step.type-outcome { background-color: #e6f7ff; border-color: #91d5ff; } /* Light blue for outcomes */
+.protocol-step.type-reference { background-color: #f8f9fa; border-color: #dee2e6; } /* Light grey for references */
+
+
+/* Conditional Branch Styling */
+.step-conditional-branches {
+    margin-top: 1rem;
+}
+
+.branch-label {
+    font-weight: bold;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem 0.375rem 0 0;
+    display: inline-block; /* Make it fit content */
+    margin-bottom: -1px; /* Overlap border slightly */
+}
+
+.branch-label-yes {
+    color: #198754; /* Green */
+    background-color: #d1e7dd;
+    border: 1px solid #a3cfbb;
+    border-bottom: none;
+}
+.branch-label-yes i { margin-right: 0.3em; }
+
+.branch-label-no {
+    color: #dc3545; /* Red */
+    background-color: #f8d7da;
+    border: 1px solid #f1aeb5;
+     border-bottom: none;
+}
+.branch-label-no i { margin-right: 0.3em; }
+
+
+.branch-content {
+    padding: 1rem;
+    border-radius: 0 0.375rem 0.375rem 0.375rem; /* Adjust corners */
+}
+.branch-yes .branch-content {
+     border: 1px solid #a3cfbb; /* Green border */
+     background-color: #f4fbf7; /* Slightly off-white green tint */
+}
+
+.branch-no .branch-content {
+    border: 1px solid #f1aeb5; /* Red border */
+    background-color: #fcf5f6; /* Slightly off-white red tint */
+}
+
+/* Adjust step margins within branches */
+.branch-content .protocol-step {
+    margin-left: 0 !important; /* Reset indentation within branch */
+    margin-bottom: 0.75rem;
+    box-shadow: none;
+}
+.branch-content .protocol-step:last-child {
+    margin-bottom: 0;
+}
+
+/* Navbar customization */
+.navbar-brand {
+    font-weight: bold;
+}
+
+
+/* Responsive adjustments if needed */
+@media (max-width: 768px) {
+    .category-icon {
+        font-size: 2.5rem;
+    }
+    h1 {
+        font-size: 1.75rem;
+    }
+     .step-conditional-branches .col-md-6 {
+         margin-bottom: 1rem; /* Stack branches on smaller screens */
+     }
+     .step-conditional-branches .col-md-6:last-child {
+         margin-bottom: 0;
+     }
+}
+
+/* assets/css/style.css */
+
+/* ... (keep existing styles) ... */
+
+/* Provider Badge Colors (adjust as needed) */
+.badge.bg-purple {
+    background-color: #6f42c1; /* Bootstrap purple example */
+    color: white;
+}
+.badge.bg-orange {
+     background-color: #fd7e14; /* Bootstrap orange example */
+     color: white;
+}
+/* You might need to adjust text color based on background */
+.badge.bg-secondary { color: white; }
+.badge.bg-success { color: white; }
+.badge.bg-info { color: white; } /* Default Bootstrap 5 info text is dark */
+
+
+/* Step Color Styling Examples (Add more as needed) */
+.protocol-step.step-color-blue .card-header { /* Example using card structure if applicable */
+    background-color: #cfe2ff;
+    border-left: 5px solid #0d6efd;
+}
+.protocol-step.step-color-green .card-header {
+     background-color: #d1e7dd;
+     border-left: 5px solid #198754;
+}
+.protocol-step.step-color-yellow .card-header {
+     background-color: #fff3cd;
+      border-left: 5px solid #ffc107;
+}
+.protocol-step.step-color-red .card-header {
+      background-color: #f8d7da;
+      border-left: 5px solid #dc3545;
+}
+.protocol-step.step-color-gray .card-header {
+      background-color: #e9ecef;
+      border-left: 5px solid #6c757d;
+}
+
+/* Ensure icons in header have consistent alignment */
+.step-header .step-icon {
+    vertical-align: middle; /* Or adjust as needed */
+    font-size: 1.1em; /* Slightly larger icon */
+}
+
+/* Styling for YES/NO Branches */
+.step-conditional-branches {
+    background-color: #f8f9fa; /* Light background for contrast */
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-top: 1rem; /* Space from parent question */
+}
+.branch-label {
+    font-weight: bold;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    display: inline-block;
+    margin-bottom: 0.75rem;
+    border: 1px solid transparent;
+}
+.branch-label-yes {
+    color: #0f5132;
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+}
+.branch-label-no {
+    color: #842029;
+    background-color: #f8d7da;
+    border-color: #f5c2c7;
+}
+.branch-content .protocol-step {
+    margin-left: 0 !important; /* Reset indentation inside branch */
+    margin-bottom: 0.75rem;
+    box-shadow: none;
+    border: 1px solid #e9ecef; /* Add border back if needed */
+}
+.branch-content .protocol-step:last-child {
+    margin-bottom: 0;
+}
