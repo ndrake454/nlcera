@@ -1,0 +1,56 @@
+[02-Apr-2025 18:14:19 America/Denver] Protocol Step Save Error (Protocol ID: 1): SQLSTATE[42S22]: Column not found: 1054 Unknown column 'icon_class' in 'field list'
+[02-Apr-2025 18:18:33 America/Denver] Protocol Step Save Error (Protocol ID: 1): SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`dbsu72hguqz0gk`.`protocol_steps`, CONSTRAINT `protocol_steps_ibfk_2` FOREIGN KEY (`parent_step_id`) REFERENCES `protocol_steps` (`step_id`) ON DELETE CASCADE ON UPDATE CASCADE)
+[02-Apr-2025 18:19:40 America/Denver] Protocol Step Save Error (Protocol ID: 1): SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`dbsu72hguqz0gk`.`protocol_steps`, CONSTRAINT `protocol_steps_ibfk_2` FOREIGN KEY (`parent_step_id`) REFERENCES `protocol_steps` (`step_id`) ON DELETE CASCADE ON UPDATE CASCADE)
+[02-Apr-2025 18:24:03 America/Denver] Protocol Step Save Error (Protocol ID: 1): SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`dbsu72hguqz0gk`.`protocol_steps`, CONSTRAINT `protocol_steps_ibfk_2` FOREIGN KEY (`parent_step_id`) REFERENCES `protocol_steps` (`step_id`) ON DELETE CASCADE ON UPDATE CASCADE)
+[02-Apr-2025 18:24:14 America/Denver] Protocol Step Save Error (Protocol ID: 1): SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`dbsu72hguqz0gk`.`protocol_steps`, CONSTRAINT `protocol_steps_ibfk_2` FOREIGN KEY (`parent_step_id`) REFERENCES `protocol_steps` (`step_id`) ON DELETE CASCADE ON UPDATE CASCADE)
+[02-Apr-2025 18:57:33 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocols.php on line 20
+[02-Apr-2025 18:57:36 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 18:57:54 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 18:58:13 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:00:05 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:00:54 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:05:50 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocols.php on line 20
+[02-Apr-2025 19:05:52 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:05:59 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:06:35 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:06:48 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:06:51 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocols.php on line 20
+[02-Apr-2025 19:06:53 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:06:56 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:07:12 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:08:34 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:11 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:11 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:13:30 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:30 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:13:38 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:38 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:13:38 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:38 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:13:39 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:13:39 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:14:04 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:14:04 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
+[02-Apr-2025 19:14:06 America/Denver] PHP Deprecated:  Constant FILTER_SANITIZE_STRING is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 15
+[02-Apr-2025 19:14:06 America/Denver] PHP Fatal error:  Uncaught Error: Call to undefined function escape() in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php:40
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_steps.php on line 40
