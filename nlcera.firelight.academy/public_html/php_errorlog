@@ -1,0 +1,4 @@
+[10-Apr-2025 01:02:37 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/nlcera.firelight.academy/includes/config.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tool_intubation.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/tool_intubation.php on line 9
