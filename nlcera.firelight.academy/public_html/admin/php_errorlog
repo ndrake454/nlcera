@@ -1,0 +1,28 @@
+[08-Apr-2025 02:01:58 UTC] PHP Warning:  require_once(/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:01:58 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php:10
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_edit.php(286): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:02 UTC] PHP Warning:  require_once(/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:02 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php:10
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_edit.php(286): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:23 UTC] PHP Warning:  require_once(/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:23 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php:10
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_edit.php(286): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:24 UTC] PHP Warning:  require_once(/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[08-Apr-2025 02:02:24 UTC] PHP Fatal error:  Uncaught Error: Failed opening required '/home/customer/www/nlcera.firelight.academy/public_html/admin/includes/auth.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php:10
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_edit.php(286): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/admin/includes/header.php on line 10
+[11-Apr-2025 14:53:37 America/Denver] PHP Warning:  session_name(): Session name cannot be changed after headers have already been sent in /home/customer/www/nlcera.firelight.academy/public_html/includes/auth.php on line 19
+[11-Apr-2025 14:53:37 America/Denver] PHP Warning:  session_start(): Session cannot be started after headers have already been sent in /home/customer/www/nlcera.firelight.academy/public_html/includes/auth.php on line 20
+[11-Apr-2025 14:53:37 America/Denver] PHP Warning:  session_regenerate_id(): Session ID cannot be regenerated when there is no active session in /home/customer/www/nlcera.firelight.academy/public_html/includes/auth.php on line 38
+[11-Apr-2025 14:53:37 America/Denver] PHP Warning:  Cannot modify header information - headers already sent by (output started at /home/customer/www/nlcera.firelight.academy/public_html/admin/protocol_edit.php:1) in /home/customer/www/nlcera.firelight.academy/public_html/includes/auth.php on line 155
