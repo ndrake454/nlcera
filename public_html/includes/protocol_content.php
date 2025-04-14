@@ -42,7 +42,7 @@
             // THIS IS THE KEY FIX: Determine section type based on title if type is missing
             $section_type = !empty($section['section_type']) ? $section['section_type'] : 'note';
             
-            // Always check title to ensure consistent type mapping
+           // Always check title to ensure consistent type mapping
 $title = strtolower($section['title']);
 if (strpos($title, 'indication') !== false && strpos($title, 'contra') === false) {
     $section_type = 'indications';
@@ -59,62 +59,58 @@ if (strpos($title, 'indication') !== false && strpos($title, 'contra') === false
 } else if (!empty($section['section_type'])) {
     $section_type = $section['section_type'];
 }
-?>
+            ?>
             
-            <?php if ($section['section_type'] === 'red_arrow'): ?>
-    <!-- Red Arrow gets special treatment - render without the protocol section container -->
-    <div class="red-arrow-standalone">
-        <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
-            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
-        </svg>
-    </div>
-<?php else: ?>
-    <div class="protocol-section <?= !empty($section['contact_base']) ? 'contact-base-required' : '' ?>">
-        <div class="section-header section-header-<?= $section['section_type'] ?>">
-    <div class="d-flex align-items-center">
-        <?php if ($section['section_type'] === 'entry_point'): ?>
-            <i class="ti ti-arrow-bar-to-down"></i>
-        <?php elseif ($section['section_type'] === 'treatment'): ?>
-            <i class="ti ti-first-aid-kit"></i>
-        <?php elseif ($section['section_type'] === 'decision'): ?>
-            <i class="ti ti-git-branch"></i>
-        <?php elseif ($section['section_type'] === 'note'): ?>
-            <i class="ti ti-note"></i>
-        <?php elseif ($section['section_type'] === 'reference'): ?>
-            <i class="ti ti-book"></i>
-        <?php elseif ($section['section_type'] === 'indications'): ?>
-            <i class="ti ti-checkbox"></i>
-        <?php elseif ($section['section_type'] === 'contraindications'): ?>
-            <i class="ti ti-ban"></i>
-        <?php elseif ($section['section_type'] === 'side_effects'): ?>
-            <i class="ti ti-alert-triangle"></i>
-        <?php elseif ($section['section_type'] === 'precautions'): ?>
-            <i class="ti ti-shield-check"></i>
-        <?php elseif ($section['section_type'] === 'technique'): ?>
-            <i class="ti ti-tools"></i>
-        <?php endif; ?>
-        
-        <?= $section['title'] ?>
-    </div>
-    
-    <?php if (!empty($section['contact_base'])): ?>
-        <div class="contact-base-container mt-2">
-            <span class="contact-base-badge">
-                <i class="ti ti-phone-call"></i> Contact Base
-            </span>
-        </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($skill_levels)): ?>
-        <div class="skill-pills-container">
-            <?php foreach ($skill_levels as $level): ?>
-                <span class="skill-pill skill-<?= strtolower($level) ?>"><?= $level ?></span>
-            <?php endforeach; ?>
-        </div>
-    <?php endif; ?>
-</div>
-        
-        <div class="section-body">
+            <?php if ($section_type === 'red_arrow'): ?>
+                <!-- Red Arrow gets special treatment - just render the content directly -->
+                <div class="red-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-circle-fill" viewBox="0 0 16 16">
+                        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
+                    </svg>
+                </div>
+            <?php else: ?>
+<div class="protocol-section <?= !empty($section['contact_base']) ? 'contact-base-required' : '' ?>" data-section-type="<?= $section_type ?>" id="section-<?= $section['id'] ?>">
+                    <div class="section-header section-header-<?= $section_type ?>">
+                        <?php if ($section_type === 'entry_point'): ?>
+                            <i class="ti ti-arrow-bar-to-down"></i>
+                        <?php elseif ($section_type === 'treatment'): ?>
+                            <i class="ti ti-first-aid-kit"></i>
+                        <?php elseif ($section_type === 'decision'): ?>
+                            <i class="ti ti-git-branch"></i>
+                        <?php elseif ($section_type === 'note'): ?>
+                            <i class="ti ti-note"></i>
+                        <?php elseif ($section_type === 'reference'): ?>
+                            <i class="ti ti-book"></i>
+                        <?php elseif ($section_type === 'indications'): ?>
+                            <i class="ti ti-checkbox"></i>
+                        <?php elseif ($section_type === 'contraindications'): ?>
+                            <i class="ti ti-ban"></i>
+                        <?php elseif ($section_type === 'side_effects'): ?>
+                            <i class="ti ti-alert-triangle"></i>
+                        <?php elseif ($section_type === 'precautions'): ?>
+                            <i class="ti ti-shield-check"></i>
+                        <?php elseif ($section_type === 'technique'): ?>
+                            <i class="ti ti-tools"></i>
+                        <?php else: ?>
+                            <i class="ti ti-note"></i>
+                        <?php endif; ?>
+                        
+                        <?= $section['title'] ?>
+                                                            <?php if (!empty($section['contact_base'])): ?>
+                    <span class="contact-base-badge ms-2">
+                        <i class="ti ti-phone-call"></i> Contact Base
+                    </span>
+                <?php endif; ?>
+                        <?php if (!empty($skill_levels)): ?>
+                            <div class="skill-pills-container">
+                                <?php foreach ($skill_levels as $level): ?>
+                                    <span class="skill-pill skill-<?= strtolower($level) ?>"><?= $level ?></span>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                    </div>
+                    <div class="section-body">
                         <?= $section['content'] ?>
                         
                         <?php if ($section_type === 'decision' && !empty($branches)): ?>
@@ -122,7 +118,7 @@ if (strpos($title, 'indication') !== false && strpos($title, 'contra') === false
                                 <div class="row">
                                     <?php foreach ($branches as $branch): ?>
                                         <div class="col-md-6 mb-3">
-                                            <div class="<?= $branch['label'] === 'YES' ? 'decision-yes' : ($branch['label'] === 'OTHER' ? 'decision-other' : 'decision-no') ?>">
+                                            <div class="<?= $branch['label'] === 'YES' ? 'decision-yes' : 'decision-no' ?>">
                                                 <div class="decision-header">
                                                     <?= $branch['label'] ?>
                                                 </div>
