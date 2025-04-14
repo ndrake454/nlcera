@@ -115,6 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
             $contact_base = isset($_POST['contact_base']) ? 1 : 0;
             $display_order = count($sections) + 1;
             
+            // Log the section type being added
+            error_log("Adding section with type: $section_type");
+            
             $data = [
                 'protocol_id' => $protocol_id,
                 'section_type' => $section_type,
@@ -127,7 +130,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
             
             $section_id = db_insert('protocol_sections', $data);
             
-            // Rest of the code...
+            if ($section_id) {
+                $response['success'] = true;
+                $response['message'] = 'Section added successfully.';
+                $response['section_id'] = $section_id;
+            } else {
+                $response['message'] = 'Failed to add section.';
+            }
+            break;
             
         case 'update_section':
             $section_id = intval($_POST['section_id'] ?? 0);
@@ -283,116 +293,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['ajax_action'])) {
 include 'includes/header.php';
 ?>
 
-<!-- Add this script at the top of the page, after the include 'includes/header.php'; line -->
-<script>
-// Global TinyMCE configuration to ensure consistent settings across all editors
-window.tinyMCEPreInit = {
-    setup: function(editor) {
-        editor.ui.registry.addButton('infomodal', {
-            icon: 'help',
-            tooltip: 'Insert Info Modal',
-            onAction: function() {
-                // Create a completely custom Bootstrap modal instead of using TinyMCE's dialog
-                // This bypasses the TinyMCE dialog limitations
-                
-                // Generate a unique ID for both the form modal and the content modal
-                const tempModalId = 'tempModal_' + Math.floor(Math.random() * 10000);
-                const contentModalId = 'infoModal_' + Math.floor(Math.random() * 10000);
-                
-                // Create the modal HTML
-                const modalHTML = `
-                <div class="modal fade" id="${tempModalId}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title">Insert Info Modal</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <form id="infoModalForm_${tempModalId}">
-                                    <div class="mb-3">
-                                        <label for="buttonText_${tempModalId}" class="form-label">Button Text</label>
-                                        <input type="text" class="form-control" id="buttonText_${tempModalId}" value="More Info">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="modalTitle_${tempModalId}" class="form-label">Modal Title</label>
-                                        <input type="text" class="form-control" id="modalTitle_${tempModalId}" value="Additional Information">
-                                    </div>
-                                    
-                                    <div class="mb-3">
-                                        <label for="modalContent_${tempModalId}" class="form-label">Modal Content</label>
-                                        <textarea class="form-control" id="modalContent_${tempModalId}" rows="5"></textarea>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                <button type="button" class="btn btn-primary" id="insertInfoBtn_${tempModalId}">Insert</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
-                
-                // Append the modal to the body
-                $('body').append(modalHTML);
-                
-                // Initialize the modal
-                const modal = new bootstrap.Modal(document.getElementById(tempModalId));
-                
-                // Show the modal
-                modal.show();
-                
-                // Handle the insert button click
-                $(`#insertInfoBtn_${tempModalId}`).on('click', function() {
-                    const buttonText = $(`#buttonText_${tempModalId}`).val();
-                    const modalTitle = $(`#modalTitle_${tempModalId}`).val();
-                    const modalContent = $(`#modalContent_${tempModalId}`).val();
-                    
-                    // HTML for the button
-                    const buttonHtml = `<button type="button" class="btn btn-sm btn-info info-button" data-bs-toggle="modal" data-bs-target="#${contentModalId}">
-                        <i class="ti ti-info-circle me-1"></i>${buttonText}</button>`;
-                    
-                    // HTML for the modal
-                    const resultModalHtml = `<div class="modal fade info-modal" id="${contentModalId}" tabindex="-1" aria-labelledby="${contentModalId}Label" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="${contentModalId}Label">${modalTitle}</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    ${modalContent.replace(/\n/g, '<br>')}
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>`;
-                    
-                    // Insert the button and modal
-                    editor.insertContent(buttonHtml + resultModalHtml);
-                    
-                    // Close and remove the temporary modal
-                    modal.hide();
-                    setTimeout(function() {
-                        $(`#${tempModalId}`).remove();
-                    }, 500);
-                });
-                
-                // Clean up when the modal is closed
-                $(`#${tempModalId}`).on('hidden.bs.modal', function() {
-                    $(this).remove();
-                });
-            }
-        });
-    }
-};
-</script>
-
-<!-- Add custom component styles -->
 <style>
+    /* Custom button styling for Quill */
+    .ql-snow .ql-picker.ql-size .ql-picker-label::before,
+    .ql-snow .ql-picker.ql-size .ql-picker-item::before {
+        content: 'Normal';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="small"]::before,
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="small"]::before {
+        content: 'Small';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="large"]::before,
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="large"]::before {
+        content: 'Large';
+    }
+    .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="huge"]::before,
+    .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="huge"]::before {
+        content: 'Huge';
+    }
+
+    .ql-snow .ql-tooltip {
+        left: 0 !important;
+    }
+
     /* Red Down Arrow */
     .red-arrow {
         display: flex;
@@ -430,6 +353,15 @@ window.tinyMCEPreInit = {
     .section-header-technique {
         background-color: #f3e5f5 !important;
         border-left: 4px solid #9c27b0 !important;
+    }
+
+    /* Custom Quill styles */
+    .custom-quill-container {
+        height: 400px;
+    }
+    .custom-quill-editor {
+        height: 350px;
+        overflow-y: auto;
     }
 </style>
 
@@ -860,52 +792,54 @@ window.tinyMCEPreInit = {
                         <input type="text" class="form-control" id="section-title" required>
                     </div>
                     <div class="mb-3">
-    <div class="form-check">
-        <input class="form-check-input" type="checkbox" id="contact-base" name="contact_base">
-        <label class="form-check-label" for="contact-base">
-            <i class="ti ti-phone-call text-danger me-1"></i> Requires Base Contact
-        </label>
-        <div class="form-text">Check this if this section requires contacting medical control</div>
-    </div>
-</div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="contact-base" name="contact_base">
+                            <label class="form-check-label" for="contact-base">
+                                <i class="ti ti-phone-call text-danger me-1"></i> Requires Base Contact
+                            </label>
+                            <div class="form-text">Check this if this section requires contacting medical control</div>
+                        </div>
+                    </div>
                     <div class="mb-3">
-    <label class="form-label">Skill Levels (optional)</label>
-    <div class="d-flex flex-wrap gap-2">
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMR" id="skill-emr">
-            <label class="form-check-label" for="skill-emr">EMR</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT" id="skill-emt">
-            <label class="form-check-label" for="skill-emt">EMT</label>
-        </div>
-        <!-- Replace the existing checkboxes below with these new ones -->
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-A" id="skill-emt-a">
-            <label class="form-check-label" for="skill-emt-a">EMT-A</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-I" id="skill-emt-i">
-            <label class="form-check-label" for="skill-emt-i">EMT-I</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-P" id="skill-emt-p">
-            <label class="form-check-label" for="skill-emt-p">EMT-P</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-CC" id="skill-emt-cc">
-            <label class="form-check-label" for="skill-emt-cc">EMT-CC</label>
-        </div>
-        <div class="form-check">
-            <input class="form-check-input skill-level-checkbox" type="checkbox" value="RN" id="skill-rn">
-            <label class="form-check-label" for="skill-rn">RN</label>
-        </div>
-    </div>
-</div>
+                        <label class="form-label">Skill Levels (optional)</label>
+                        <div class="d-flex flex-wrap gap-2">
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMR" id="skill-emr">
+                                <label class="form-check-label" for="skill-emr">EMR</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT" id="skill-emt">
+                                <label class="form-check-label" for="skill-emt">EMT</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-A" id="skill-emt-a">
+                                <label class="form-check-label" for="skill-emt-a">EMT-A</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-I" id="skill-emt-i">
+                                <label class="form-check-label" for="skill-emt-i">EMT-I</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-P" id="skill-emt-p">
+                                <label class="form-check-label" for="skill-emt-p">EMT-P</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="EMT-CC" id="skill-emt-cc">
+                                <label class="form-check-label" for="skill-emt-cc">EMT-CC</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input skill-level-checkbox" type="checkbox" value="RN" id="skill-rn">
+                                <label class="form-check-label" for="skill-rn">RN</label>
+                            </div>
+                        </div>
+                    </div>
                     
                     <div class="mb-3">
                         <label for="section-content" class="form-label">Content</label>
-                        <textarea class="form-control tinymce" id="section-content" rows="10"></textarea>
+                        <div id="section-content-container" class="custom-quill-container">
+                            <div id="section-content-editor" class="custom-quill-editor"></div>
+                        </div>
+                        <div id="section-content-hidden"></div>
                     </div>
                 </form>
             </div>
@@ -993,74 +927,45 @@ window.tinyMCEPreInit = {
     </div>
 </div>
 
+<!-- Add Modal for Info Button -->
+<div class="modal fade" id="info-modal-template" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Insert Info Modal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="info-modal-form">
+                    <div class="mb-3">
+                        <label for="info-button-text" class="form-label">Button Text</label>
+                        <input type="text" class="form-control" id="info-button-text" value="More Info">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="info-modal-title-input" class="form-label">Modal Title</label>
+                        <input type="text" class="form-control" id="info-modal-title-input" value="Additional Information">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="info-modal-content" class="form-label">Modal Content</label>
+                        <textarea class="form-control" id="info-modal-content" rows="5"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="insert-info-modal-btn">Insert</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- JavaScript for Protocol Editor -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize TinyMCE
-    tinymce.init({
-        selector: '.tinymce',
-        height: 400,
-        menubar: true, // Enable the top menu bar for more options
-        plugins: [
-            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-            'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-            'hr', 'print', 'textcolor', 'paste', 'template', 'nonbreaking', 'toc', 'visualchars'
-        ],
-        toolbar: 'undo redo | formatselect fontselect fontsizeselect | ' +
-            'bold italic underline strikethrough forecolor backcolor | alignleft aligncenter ' +
-            'alignright alignjustify | bullist numlist outdent indent | ' +
-            'link image media table | hr nonbreaking | ' +
-            'removeformat code | infomodal | help',
-        content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; }',
-        setup: window.tinyMCEPreInit.setup,
-        
-        // Image upload settings
-        images_upload_url: '../api/upload_image.php',
-        images_upload_base_path: '',
-        images_reuse_filename: true,
-        
-        // Allow pasting of images
-        paste_data_images: true,
-        
-        // More options for images
-        image_advtab: true,
-        image_title: true,
-        image_caption: true,
-        
-        // Configure additional options for tables
-        table_default_styles: {
-            width: '100%'
-        },
-        table_responsive_width: true,
-        table_class_list: [
-            {title: 'Default', value: 'table'},
-            {title: 'Striped', value: 'table table-striped'},
-            {title: 'Bordered', value: 'table table-bordered'},
-            {title: 'Hover', value: 'table table-hover'}
-        ],
-        
-        // Template options for common snippets
-        templates: [
-            { title: 'Protocol Warning', description: 'Adds a warning box', content: '<div class="alert alert-warning"><strong>Warning:</strong> Replace with your warning text.</div>' },
-            { title: 'Protocol Note', description: 'Adds an info box', content: '<div class="alert alert-info"><strong>Note:</strong> Replace with your note text.</div>' },
-            { title: 'Protocol Caution', description: 'Adds a danger box', content: '<div class="alert alert-danger"><strong>Caution:</strong> Replace with your caution text.</div>' },
-            { title: 'Two Columns', description: 'Adds a two-column layout', content: '<div class="row"><div class="col-md-6">Left column content</div><div class="col-md-6">Right column content</div></div>' }
-        ],
-        
-        // Auto convert URL instances to links
-        convert_urls: false,
-        
-        // Extended valid elements to allow more HTML tags and attributes
-        extended_valid_elements: 'img[class=img-fluid|src|border=0|alt|title|width|height|align|style],table[width=100%|class|style],*[*]',
-        
-        // Allow HTML tags in TinyMCE
-        valid_elements: '*[*]',
-        
-        // Font options
-        fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-        font_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n'
-    });
+    // Variable to store the current Quill editor instance
+    let sectionQuill = null;
     
     // Make protocol sections sortable
     $('#protocol-editor-area').sortable({
@@ -1189,32 +1094,34 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Save Section Button Click
-$('#save-section-btn').click(function() {
-    const sectionId = $('#section-id').val();
-    const sectionType = $('#section-type').val();
-    const title = $('#section-title').val();
-    const content = tinymce.get('section-content').getContent();
-    const contactBase = $('#contact-base').is(':checked') ? 1 : 0;
-    
-    // Get selected skill levels
-    const skillLevels = $('.skill-level-checkbox:checked').map(function() {
-        return $(this).val();
-    }).get();
-    
-    // Validate form
-    if (!title) {
-        alert('Please enter a title for the section.');
-        return;
-    }
-    
-    // Prepare data
-    const data = {
-        section_type: sectionType,
-        title: title,
-        content: content,
-        skill_levels: skillLevels,
-        contact_base: contactBase
-    };
+    $('#save-section-btn').click(function() {
+        const sectionId = $('#section-id').val();
+        const sectionType = $('#section-type').val();
+        const title = $('#section-title').val();
+        const contactBase = $('#contact-base').is(':checked') ? 1 : 0;
+        
+        // Get Quill editor content
+        const content = sectionQuill ? sectionQuill.root.innerHTML : '';
+        
+        // Get selected skill levels
+        const skillLevels = $('.skill-level-checkbox:checked').map(function() {
+            return $(this).val();
+        }).get();
+        
+        // Validate form
+        if (!title) {
+            alert('Please enter a title for the section.');
+            return;
+        }
+        
+        // Prepare data
+        const data = {
+            section_type: sectionType,
+            title: title,
+            content: content,
+            skill_levels: skillLevels,
+            contact_base: contactBase
+        };
         
         if (sectionId === '0') {
             // Add new section
@@ -1355,6 +1262,157 @@ $('#save-section-btn').click(function() {
         loadProtocolPreview();
     });
     
+    // Function to initialize Quill editor with HTML Blot support
+    function initQuill(element, placeholder = 'Enter content here...', content = '') {
+        // Register custom blot for rendering HTML content like buttons and modals
+        const Inline = Quill.import('blots/inline');
+        const Block = Quill.import('blots/block');
+        
+        // Create a custom HTML blot that can render HTML with full fidelity
+        class HTMLBlot extends Block {
+            static create(value) {
+                let node = super.create();
+                node.innerHTML = value;
+                return node;
+            }
+            
+            static value(node) {
+                return node.innerHTML;
+            }
+        }
+        
+        HTMLBlot.tagName = 'div';
+        HTMLBlot.className = 'html-embed';
+        HTMLBlot.blotName = 'html';
+        Quill.register(HTMLBlot);
+        
+        // Configure Quill
+        const quill = new Quill(element, {
+            modules: {
+                toolbar: {
+                    container: [
+                        [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'color': [] }, { 'background': [] }],
+                        [{ 'align': [] }],
+                        ['blockquote', 'code-block'],
+                        [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'script': 'sub' }, { 'script': 'super' }],
+                        [{ 'indent': '-1' }, { 'indent': '+1' }],
+                        ['link', 'image', 'video'],
+                        ['clean'],
+                        ['info-modal']
+                    ],
+                    handlers: {
+                        'image': function() {
+                            const input = document.createElement('input');
+                            input.setAttribute('type', 'file');
+                            input.setAttribute('accept', 'image/*');
+                            input.click();
+                            
+                            input.onchange = () => {
+                                const file = input.files[0];
+                                if (file) {
+                                    const formData = new FormData();
+                                    formData.append('file', file);
+                                    
+                                    // Show loading indicator
+                                    const range = this.quill.getSelection(true);
+                                    this.quill.insertText(range.index, 'Uploading image...', { 'italic': true });
+                                    
+                                    // Upload image
+                                    fetch('../api/upload_image.php', {
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                    .then(response => response.json())
+                                    .then(result => {
+                                        // Remove loading text
+                                        this.quill.deleteText(range.index, 'Uploading image...'.length);
+                                        
+                                        // Insert the image
+                                        if (result.location) {
+                                            this.quill.insertEmbed(range.index, 'image', result.location);
+                                        } else {
+                                            alert('Failed to upload image: ' + (result.message || 'Unknown error'));
+                                        }
+                                    })
+                                    .catch(error => {
+                                        // Remove loading text
+                                        this.quill.deleteText(range.index, 'Uploading image...'.length);
+                                        alert('Failed to upload image: ' + error);
+                                    });
+                                }
+                            };
+                        },
+                        'info-modal': function() {
+                            // Show the info modal dialog
+                            const infoModal = new bootstrap.Modal(document.getElementById('info-modal-template'));
+                            infoModal.show();
+                            
+                            // Set up the Insert button handler
+                            document.getElementById('insert-info-modal-btn').onclick = () => {
+                                const buttonText = document.getElementById('info-button-text').value || 'More Info';
+                                const modalTitle = document.getElementById('info-modal-title-input').value || 'Additional Information';
+                                const modalContent = document.getElementById('info-modal-content').value || '';
+                                
+                                // Generate unique ID for the modal
+                                const modalId = 'infoModal_' + Math.floor(Math.random() * 10000);
+                                
+                                // Create HTML for button and modal
+                                const html = `
+                                <div class="html-embed">
+                                    <button type="button" class="btn btn-sm btn-info info-button" data-bs-toggle="modal" data-bs-target="#${modalId}">
+                                        <i class="ti ti-info-circle me-1"></i>${buttonText}
+                                    </button>
+                                    <div class="modal fade info-modal" id="${modalId}" tabindex="-1" aria-labelledby="${modalId}Label" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="${modalId}Label">${modalTitle}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    ${modalContent.replace(/\n/g, '<br>')}
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>`;
+                                
+                                // Get the current selection
+                                const range = this.quill.getSelection(true);
+                                
+                                // Insert the custom HTML block
+                                this.quill.insertEmbed(range.index, 'html', html);
+                                
+                                // Close the info modal
+                                infoModal.hide();
+                                
+                                // Clear the form fields for next use
+                                document.getElementById('info-button-text').value = 'More Info';
+                                document.getElementById('info-modal-title-input').value = 'Additional Information';
+                                document.getElementById('info-modal-content').value = '';
+                            };
+                        }
+                    }
+                }
+            },
+            placeholder: placeholder,
+            theme: 'snow'
+        });
+        
+        // Set content if provided
+        if (content) {
+            quill.root.innerHTML = content;
+        }
+        
+        return quill;
+    }
+    
     // Function to open section modal for add/edit
     function openSectionModal(sectionId, sectionType, templateId = 0) {
         console.log("Opening section modal for:", sectionType);
@@ -1425,48 +1483,48 @@ $('#save-section-btn').click(function() {
         
         // Handle contraindications section
         else if (sectionType === 'contraindications') {
-    // Debugging
-    console.log("Creating contraindications section with type:", 'contraindications');
-    
-    let sectionExists = false;
-    $('.protocol-section').each(function() {
-        if ($(this).data('section-type') === 'contraindications') {
-            sectionExists = true;
-            return false;
+            // Debugging
+            console.log("Creating contraindications section with type:", 'contraindications');
+            
+            let sectionExists = false;
+            $('.protocol-section').each(function() {
+                if ($(this).data('section-type') === 'contraindications') {
+                    sectionExists = true;
+                    return false;
+                }
+            });
+            
+            if (sectionExists) {
+                alert('A Contraindications section already exists in this protocol.');
+                return;
+            }
+            
+            const data = {
+                section_type: 'contraindications',
+                title: 'Contraindications',
+                content: '<ul><li>Add contraindications here</li></ul>',
+                skill_levels: []
+            };
+            
+            // Log what we're sending to the server
+            console.log("Sending section data:", data);
+            
+            $.post('protocol_edit.php?id=<?= $protocol_id ?>', {
+                ajax_action: 'add_section',
+                ...data
+            }, function(response) {
+                console.log("Server response:", response);
+                if (response.success) {
+                    window.location.reload();
+                } else {
+                    alert('Failed to add contraindications: ' + response.message);
+                }
+            }, 'json').fail(function(xhr, status, error) {
+                console.error("AJAX error:", error);
+            });
+            
+            return;
         }
-    });
-    
-    if (sectionExists) {
-        alert('A Contraindications section already exists in this protocol.');
-        return;
-    }
-    
-    const data = {
-        section_type: 'contraindications',
-        title: 'Contraindications',
-        content: '<ul><li>Add contraindications here</li></ul>',
-        skill_levels: []
-    };
-    
-    // Log what we're sending to the server
-    console.log("Sending section data:", data);
-    
-    $.post('protocol_edit.php?id=<?= $protocol_id ?>', {
-        ajax_action: 'add_section',
-        ...data
-    }, function(response) {
-        console.log("Server response:", response);
-        if (response.success) {
-            window.location.reload();
-        } else {
-            alert('Failed to add contraindications: ' + response.message);
-        }
-    }, 'json').fail(function(xhr, status, error) {
-        console.error("AJAX error:", error);
-    });
-    
-    return;
-}
         
         // Handle side effects section
         else if (sectionType === 'side_effects') {
@@ -1578,144 +1636,95 @@ $('#save-section-btn').click(function() {
         
         // For other component types, show the modal
         // Reset the form
-    $('#section-form')[0].reset();
-    $('#section-id').val(sectionId);
-    $('#section-type').val(sectionType);
-    
-    // Uncheck contact base checkbox by default
-    $('#contact-base').prop('checked', false);
-    
-    // Uncheck all skill level checkboxes
-    $('.skill-level-checkbox').prop('checked', false);
-    
-    // Destroy any existing TinyMCE editor to prevent duplicates
-    if (tinymce.get('section-content')) {
-        tinymce.get('section-content').remove();
-    }
-    
-    // Set modal title based on action
-    if (sectionId === 0) {
-        $('#section-modal-title').text('Add ' + getSectionTypeName(sectionType));
+        $('#section-form')[0].reset();
+        $('#section-id').val(sectionId);
+        $('#section-type').val(sectionType);
         
-        // If using a template, load it
-        if (templateId > 0) {
-            // TODO: Load template content
-        }
-    } else {
-        $('#section-modal-title').text('Edit ' + getSectionTypeName(sectionType));
+        // Uncheck contact base checkbox by default
+        $('#contact-base').prop('checked', false);
         
-        // Load section data
-        $.getJSON(`../api/get_section.php?id=${sectionId}`, function(data) {
-            if (data.success) {
-                const section = data.section;
-                
-                $('#section-title').val(section.title);
-                
-                // Set contact base checkbox
-                $('#contact-base').prop('checked', section.contact_base == 1);
-                
-                // Set skill levels
-                if (section.skill_levels) {
-                    const skillLevels = !empty(section.skill_levels) ? JSON.parse(section.skill_levels) : [];
-                    skillLevels.forEach(level => {
-                        $(`.skill-level-checkbox[value="${level}"]`).prop('checked', true);
-                    });
-                }
-                
-                // Initialize TinyMCE after data is loaded
-                initModalEditor(section.content);
-            } else {
-                alert('Failed to load section data: ' + data.message);
+        // Uncheck all skill level checkboxes
+        $('.skill-level-checkbox').prop('checked', false);
+        
+        // Clean up any existing Quill editor
+        if (sectionQuill) {
+            try {
+                // Clean up the old editor
+                sectionQuill = null;
+            } catch (e) {
+                console.error("Error cleaning up Quill:", e);
             }
-        }).fail(function() {
-            alert('Failed to load section data. Please try again.');
-            
-            // Initialize TinyMCE with empty content
-            initModalEditor('');
-        });
-    }
-        
-        // If this is a new section, initialize TinyMCE with empty content
-        if (sectionId === 0) {
-            initModalEditor('');
         }
         
-        // Show the modal
+        // Completely remove and recreate the editor element to ensure clean slate
+        const editorContainer = document.getElementById('section-content-container');
+        if (editorContainer) {
+            editorContainer.innerHTML = '<div id="section-content-editor" class="custom-quill-editor"></div>';
+        }
+        
+        // Set modal title based on action
+        if (sectionId === 0) {
+            $('#section-modal-title').text('Add ' + getSectionTypeName(sectionType));
+        } else {
+            $('#section-modal-title').text('Edit ' + getSectionTypeName(sectionType));
+        }
+        
+        // Show the modal first
         const sectionModal = new bootstrap.Modal(document.getElementById('section-modal'));
         sectionModal.show();
-    }
-    
-    // Function to initialize TinyMCE in the modal
-    function initModalEditor(content) {
-        tinymce.init({
-            selector: '#section-content',
-            height: 400,
-            menubar: true,
-            plugins: [
-                'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                'insertdatetime', 'media', 'table', 'help', 'wordcount', 'emoticons',
-                'hr', 'print', 'textcolor', 'paste', 'template', 'nonbreaking', 'toc', 'visualchars'
-            ],
-            toolbar: 'undo redo | formatselect fontselect fontsizeselect | ' +
-                'bold italic underline strikethrough forecolor backcolor | alignleft aligncenter ' +
-                'alignright alignjustify | bullist numlist outdent indent | ' +
-                'link image media table | hr nonbreaking | ' +
-                'removeformat code | infomodal | help',
-            content_style: 'body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; font-size: 16px; }',
-            setup: window.tinyMCEPreInit.setup,
+        
+        // Initialize Quill after the modal is shown
+        setTimeout(() => {
+            const editorElement = document.getElementById('section-content-editor');
             
-            // Image upload settings
-            images_upload_url: '../api/upload_image.php',
-            images_upload_base_path: '',
-            images_reuse_filename: true,
-            
-            // Allow pasting of images
-            paste_data_images: true,
-            
-            // More options for images
-            image_advtab: true,
-            image_title: true,
-            image_caption: true,
-            
-            // Configure additional options for tables
-            table_default_styles: {
-                width: '100%'
-            },
-            table_responsive_width: true,
-            table_class_list: [
-                {title: 'Default', value: 'table'},
-                {title: 'Striped', value: 'table table-striped'},
-                {title: 'Bordered', value: 'table table-bordered'},
-                {title: 'Hover', value: 'table table-hover'}
-            ],
-            
-            // Template options for common snippets
-            templates: [
-                { title: 'Protocol Warning', description: 'Adds a warning box', content: '<div class="alert alert-warning"><strong>Warning:</strong> Replace with your warning text.</div>' },
-                { title: 'Protocol Note', description: 'Adds an info box', content: '<div class="alert alert-info"><strong>Note:</strong> Replace with your note text.</div>' },
-                { title: 'Protocol Caution', description: 'Adds a danger box', content: '<div class="alert alert-danger"><strong>Caution:</strong> Replace with your caution text.</div>' },
-                { title: 'Two Columns', description: 'Adds a two-column layout', content: '<div class="row"><div class="col-md-6">Left column content</div><div class="col-md-6">Right column content</div></div>' }
-            ],
-            
-            // Auto convert URL instances to links
-            convert_urls: false,
-            
-            // Extended valid elements to allow more HTML tags and attributes
-            extended_valid_elements: 'img[class=img-fluid|src|border=0|alt|title|width|height|align|style],table[width=100%|class|style],*[*]',
-            
-            // Allow HTML tags in TinyMCE
-            valid_elements: '*[*]',
-            
-            // Font options
-            fontsize_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
-            font_formats: 'Arial=arial,helvetica,sans-serif; Courier New=courier new,courier,monospace; AkrutiKndPadmini=Akpdmi-n',
-            
-            // Set the initial content
-            init_instance_callback: function(editor) {
-                editor.setContent(content);
+            if (sectionId === 0) {
+                // Initialize Quill with empty content for new section
+                sectionQuill = initQuill(editorElement);
+                
+                // If using a template, load it
+                if (templateId > 0) {
+                    // TODO: Load template content
+                }
+            } else {
+                // Load section data
+                $.getJSON(`../api/get_section.php?id=${sectionId}`, function(data) {
+                    if (data.success) {
+                        const section = data.section;
+                        
+                        $('#section-title').val(section.title);
+                        
+                        // Set contact base checkbox
+                        $('#contact-base').prop('checked', section.contact_base == 1);
+                        
+                        // Set skill levels
+                        if (section.skill_levels) {
+                            try {
+                                const skillLevels = section.skill_levels ? JSON.parse(section.skill_levels) : [];
+                                skillLevels.forEach(level => {
+                                    $(`.skill-level-checkbox[value="${level}"]`).prop('checked', true);
+                                });
+                            } catch (e) {
+                                console.error("Error parsing skill levels:", e);
+                            }
+                        }
+                        
+                        // Initialize Quill with existing content
+                        console.log("Initializing Quill with existing content");
+                        sectionQuill = initQuill(editorElement, 'Edit content...', section.content);
+                    } else {
+                        alert('Failed to load section data: ' + data.message);
+                        
+                        // Initialize empty Quill editor
+                        sectionQuill = initQuill(editorElement);
+                    }
+                }).fail(function() {
+                    alert('Failed to load section data. Please try again.');
+                    
+                    // Initialize empty Quill editor
+                    sectionQuill = initQuill(editorElement);
+                });
             }
-        });
+        }, 50); // Short delay to ensure modal is fully rendered
     }
     
     // Function to open branches modal
@@ -1867,6 +1876,15 @@ $('#save-section-btn').click(function() {
     function empty(value) {
         return value === undefined || value === null || value === '';
     }
+    
+    // Add cleanup when modal is hidden
+    document.getElementById('section-modal').addEventListener('hidden.bs.modal', function () {
+        if (sectionQuill) {
+            console.log("Cleaning up Quill on modal close");
+            // We don't need to do anything specific here
+            // The next time the modal opens, it will recreate the editor
+        }
+    });
 });
 </script>
 
