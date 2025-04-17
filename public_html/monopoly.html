@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monopoly Companion</title>
+    <style>
+        :root {
+            --primary-color: #2a9d8f;
+            --secondary-color: #e9c46a;
+            --dark-color: #264653;
+            --light-color: #f1faee;
+            --danger-color: #e76f51;
+            --success-color: #40916c;
+            --warning-color: #e9c46a;
+            --property-brown: #955436;
+            --property-light-blue: #aae0fa;
+            --property-pink: #d93a96;
+            --property-orange: #f7941d;
+            --property-red: #ed1b24;
+            --property-yellow: #fef200;
+            --property-green: #1fb25a;
+            --property-dark-blue: #0072bb;
+            --utility-color: #d3d3d3;
+            --railroad-color: #0c0c0c;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        nav {
+            background-color: var(--dark-color);
+            padding: 0.5rem;
+        }
+
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            margin: 0 0.5rem;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: var(--primary-color);
+        }
+
+        section {
+            margin: 2rem 0;
+            padding: 1rem;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        h1, h2, h3, h4 {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--dark-color);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1rem;
+        }
+
+        th, td {
+            padding: 0.5rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        /* Property Cards Styling */
+        .property-card {
+            border: 1px solid #000;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .property-header {
+            color: white;
+            font-weight: bold;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .property-body {
+            padding: 10px;
+            background: white;
+        }
+
+        .property-info {
+            margin-bottom: 5px;
+        }
+
+        .brown { background-color: var(--property-brown); }
+        .light-blue { background-color: var(--property-light-blue); color: black; }
+        .pink { background-color: var(--property-pink); }
+        .orange { background-color: var(--property-orange); }
+        .red { background-color: var(--property-red); }
+        .yellow { background-color: var(--property-yellow); color: black; }
+        .green { background-color: var(--property-green); }
+        .dark-blue { background-color: var(--property-dark-blue); }
+        .utility { background-color: var(--utility-color); color: black; }
+        .railroad { background-color: var(--railroad-color); }
+
+        /* Game Board Styling */
+        .board-container {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            grid-template-rows: repeat(11, 1fr);
+            gap: 2px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            aspect-ratio: 1 / 1;
+        }
+
+        .board-space {
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2px;
+            font-size: 10px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+
+        .corner {
+            grid-column: span 2;
+            grid-row: span 2;
+            font-size: 12px;
+            background-color: #e9ecef;
+        }
+
+        .color-bar {
+            height: 20%;
+            width: 100%;
+        }
+
+        /* Calculator Styling */
+        .calculator {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .calculator input, .calculator select {
+            width: 100%;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav a {
+                margin: 0.2rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Monopoly Companion</h1>
+        <p>Your ultimate guide to the world's favorite property trading game</p>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#properties">Properties</a></li>
+            <li><a href="#rules">Rules</a></li>
+            <li><a href="#calculators">Calculators</a></li>
+            <li><a href="#board">Game Board</a></li>
+            <li><a href="#strategies">Strategies</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section id="home">
+            <h2>Welcome to the Monopoly Companion</h2>
+            <p>This companion site provides all the information you need to dominate your next Monopoly game. Browse property values, check rules, use calculators, and more!</p>
+            
+            <div class="grid">
+                <div class="card">
+                    <h3>Quick Property Look-up</h3>
+                    <p>Find property values, rents, and mortgage values instantly.</p>
+                    <a href="#properties" class="btn">View Properties</a>
+                </div>
+                <div class="card">
+                    <h3>Rule Check</h3>
+                    <p>Settle disputes with the official rules and common house rules.</p>
+                    <a href="#rules" class="btn">Check Rules</a>
+                </div>
+                <div class="card">
+                    <h3>Game Calculators</h3>
+                    <p>Calculate mortgages, building costs, and potential returns.</p>
+                    <a href="#calculators" class="btn">Use Calculators</a>
+                </div>
+                <div class="card">
+                    <h3>Game Board</h3>
+                    <p>Interactive reference of the Monopoly board and spaces.</p>
+                    <a href="#board" class="btn">View Board</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="properties">
+            <h2>Properties</h2>
+            <p>Complete information about all properties in the game.</p>
+            
+            <h3>Color Sets</h3>
+            
+            <h4>Brown Properties</h4>
+            <div class="grid">
+                <div class="property-card">
+                    <div class="property-header brown">Mediterranean Avenue</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $60</div>
+                        <div class="property-info"><strong>Rent:</strong> $2</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $10</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $30</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $90</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $160</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $250</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $30</div>
+                        <div class="property-info"><strong>House Cost:</strong> $50 each</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-header brown">Baltic Avenue</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $60</div>
+                        <div class="property-info"><strong>Rent:</strong> $4</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $20</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $60</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $180</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $320</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $450</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $30</div>
+                        <div class="property-info"><strong>House Cost:</strong> $50 each</div>
+                    </div>
+                </div>
+            </div>
+            
+            <h4>Light Blue Properties</h4>
+            <div class="grid">
+                <div class="property-card">
+                    <div class="property-header light-blue">Oriental Avenue</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $100</div>
+                        <div class="property-info"><strong>Rent:</strong> $6</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $30</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $90</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $270</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $400</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $550</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $50</div>
+                        <div class="property-info"><strong>House Cost:</strong> $50 each</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-header light-blue">Vermont Avenue</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $100</div>
+                        <div class="property-info"><strong>Rent:</strong> $6</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $30</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $90</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $270</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $400</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $550</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $50</div>
+                        <div class="property-info"><strong>House Cost:</strong> $50 each</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-header light-blue">Connecticut Avenue</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $120</div>
+                        <div class="property-info"><strong>Rent:</strong> $8</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $40</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $100</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $300</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $450</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $600</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $60</div>
+                        <div class="property-info"><strong>House Cost:</strong> $50 each</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- More property sets would continue here -->
+            <h4>Pink Properties</h4>
+            <div class="grid">
+                <div class="property-card">
+                    <div class="property-header pink">St. Charles Place</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $140</div>
+                        <div class="property-info"><strong>Rent:</strong> $10</div>
+                        <div class="property-info"><strong>With 1 House:</strong> $50</div>
+                        <div class="property-info"><strong>With 2 Houses:</strong> $150</div>
+                        <div class="property-info"><strong>With 3 Houses:</strong> $450</div>
+                        <div class="property-info"><strong>With 4 Houses:</strong> $625</div>
+                        <div class="property-info"><strong>With Hotel:</strong> $750</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $70</div>
+                        <div class="property-info"><strong>House Cost:</strong> $100 each</div>
+                    </div>
+                </div>
+                
+                <!-- Additional pink properties would go here -->
+            </div>
+            
+            <h4>Railroads</h4>
+            <div class="grid">
+                <div class="property-card">
+                    <div class="property-header railroad">Reading Railroad</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $200</div>
+                        <div class="property-info"><strong>Rent:</strong> $25</div>
+                        <div class="property-info"><strong>Rent with 2 Railroads:</strong> $50</div>
+                        <div class="property-info"><strong>Rent with 3 Railroads:</strong> $100</div>
+                        <div class="property-info"><strong>Rent with 4 Railroads:</strong> $200</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $100</div>
+                    </div>
+                </div>
+                
+                <!-- Additional railroads would go here -->
+            </div>
+            
+            <h4>Utilities</h4>
+            <div class="grid">
+                <div class="property-card">
+                    <div class="property-header utility">Electric Company</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $150</div>
+                        <div class="property-info"><strong>Rent:</strong> 4 times the amount shown on dice (if one utility owned)</div>
+                        <div class="property-info"><strong>Rent with both Utilities:</strong> 10 times the amount shown on dice</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $75</div>
+                    </div>
+                </div>
+                
+                <div class="property-card">
+                    <div class="property-header utility">Water Works</div>
+                    <div class="property-body">
+                        <div class="property-info"><strong>Price:</strong> $150</div>
+                        <div class="property-info"><strong>Rent:</strong> 4 times the amount shown on dice (if one utility owned)</div>
+                        <div class="property-info"><strong>Rent with both Utilities:</strong> 10 times the amount shown on dice</div>
+                        <div class="property-info"><strong>Mortgage Value:</strong> $75</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="rules">
+            <h2>Game Rules</h2>
+            
+            <h3>Basic Rules</h3>
+            <ul>
+                <li><strong>Objective:</strong> Be the last player remaining with money when all other players have gone bankrupt.</li>
+                <li><strong>Setup:</strong> Each player starts with $1,500 in cash. Properties, railroads, and utilities are distributed via purchases as the game progresses.</li>
+                <li><strong>Turn Order:</strong> Roll dice to determine who goes first (highest roll). Then proceed clockwise.</li>
+                <li><strong>Movement:</strong> Roll two dice and move that number of spaces clockwise around the board.</li>
+            </ul>
+            
+            <h3>Property Rules</h3>
+            <ul>
+                <li><strong>Buying Property:</strong> When landing on an unowned property, you may buy it for the listed price. If you choose not to buy, the property is auctioned to the highest bidder.</li>
+                <li><strong>Paying Rent:</strong> When landing on a property owned by another player, you must pay rent according to the property card.</li>
+                <li><strong>Collecting Sets:</strong> When you own all properties of a color group, rent doubles on unimproved properties of that group.</li>
+                <li><strong>Building:</strong> You can build houses/hotels only on complete color sets. Buildings must be distributed evenly.</li>
+            </ul>
+            
+            <h3>Special Spaces</h3>
+            <ul>
+                <li><strong>GO:</strong> Collect $200 when you pass or land on GO.</li>
+                <li><strong>Jail:</strong> Go to Jail when: landing on "Go to Jail", drawing a card that sends you to jail, or rolling doubles three times in a row.</li>
+                <li><strong>Free Parking:</strong> By standard rules, nothing happens. Common house rule: Collect all fees paid to the bank.</li>
+                <li><strong>Income Tax:</strong> Pay $200 to the bank.</li>
+                <li><strong>Luxury Tax:</strong> Pay $100 to the bank.</li>
+                <li><strong>Chance/Community Chest:</strong> Draw a card and follow its instructions.</li>
+            </ul>
+            
+            <h3>Getting Out of Jail</h3>
+            <ul>
+                <li>Pay $50 at the beginning of your turn</li>
+                <li>Use a "Get Out of Jail Free" card</li>
+                <li>Roll doubles on any of your next three turns</li>
+                <li>If you don't roll doubles by your third turn, you must pay $50</li>
+            </ul>
+            
+            <h3>Bankruptcy</h3>
+            <ul>
+                <li><strong>To Another Player:</strong> Give all your assets to the player you owe money to.</li>
+                <li><strong>To the Bank:</strong> Return all properties to the bank. Properties are auctioned off.</li>
+            </ul>
+            
+            <h3>Common House Rules</h3>
+            <p>These are unofficial but commonly used rules:</p>
+            <ul>
+                <li><strong>Free Parking Jackpot:</strong> All taxes and fees go to the center and are collected by whoever lands on Free Parking.</li>
+                <li><strong>Double GO Money:</strong> Collect $400 (instead of $200) when landing exactly on GO.</li>
+                <li><strong>No Auctions:</strong> Skip auctions if a player doesn't want to buy a property.</li>
+                <li><strong>Unlimited Houses/Hotels:</strong> Allow more buildings than the standard game provides.</li>
+                <li><strong>Delayed Rent:</strong> If a property owner fails to ask for rent before the next player rolls, rent cannot be collected.</li>
+            </ul>
+        </section>
+
+        <section id="calculators">
+            <h2>Game Calculators</h2>
+            
+            <h3>Mortgage Calculator</h3>
+            <div class="calculator">
+                <label for="property-value">Property Value ($):</label>
+                <input type="number" id="property-value" placeholder="Enter property value">
+                
+                <label for="mortgage-result">Mortgage Value:</label>
+                <input type="text" id="mortgage-result" readonly>
+                
+                <label for="unmortgage-result">Cost to Unmortgage:</label>
+                <input type="text" id="unmortgage-result" readonly>
+                
+                <button class="btn" onclick="calculateMortgage()">Calculate</button>
+            </div>
+            
+            <h3>Building Cost Calculator</h3>
+            <div class="calculator">
+                <label for="property-set">Property Set:</label>
+                <select id="property-set">
+                    <option value="brown">Brown</option>
+                    <option value="light-blue">Light Blue</option>
+                    <option value="pink">Pink</option>
+                    <option value="orange">Orange</option>
+                    <option value="red">Red</option>
+                    <option value="yellow">Yellow</option>
+                    <option value="green">Green</option>
+                    <option value="dark-blue">Dark Blue</option>
+                </select>
+                
+                <label for="num-houses">Number of Houses:</label>
+                <input type="number" id="num-houses" min="0" max="20" placeholder="Enter number of houses">
+                
+                <label for="num-hotels">Number of Hotels:</label>
+                <input type="number" id="num-hotels" min="0" max="5" placeholder="Enter number of hotels">
+                
+                <label for="building-cost-result">Total Building Cost:</label>
+                <input type="text" id="building-cost-result" readonly>
+                
+                <button class="btn" onclick="calculateBuildingCost()">Calculate</button>
+            </div>
+            
+            <h3>Rent Probability Calculator</h3>
+            <div class="calculator">
+                <p>Calculate the probability of players landing on your properties in the next round.</p>
+                
+                <label for="player-positions">Number of Players:</label>
+                <input type="number" id="player-positions" min="2" max="8" value="4">
+                
+                <label for="your-properties">Your Properties (separate by commas):</label>
+                <input type="text" id="your-properties" placeholder="e.g. Boardwalk, Park Place">
+                
+                <label for="probability-result">Landing Probability:</label>
+                <input type="text" id="probability-result" readonly>
+                
+                <button class="btn" onclick="calculateProbability()">Calculate</button>
+            </div>
+        </section>
+
+        <section id="board">
+            <h2>Game Board</h2>
+            <p>Interactive reference of the Monopoly board and spaces.</p>
+            
+            <div class="board-container">
+                <!-- Row 1 (Bottom) -->
+                <div class="board-space corner" style="grid-column: 1 / 3; grid-row: 10 / 12;">GO<br>Collect $200</div>
+                <div class="board-space" style="grid-column: 3 / 4; grid-row: 10 / 12;">
+                    <div class="color-bar brown"></div>
+                    Mediterranean Ave<br>$60
+                </div>
+                <div class="board-space" style="grid-column: 4 / 5; grid-row: 10 / 12;">Community Chest</div>
+                <div class="board-space" style="grid-column: 5 / 6; grid-row: 10 / 12;">
+                    <div class="color-bar brown"></div>
+                    Baltic Ave<br>$60
+                </div>
+                <div class="board-space" style="grid-column: 6 / 7; grid-row: 10 / 12;">Income Tax<br>Pay $200</div>
+                <div class="board-space" style="grid-column: 7 / 8; grid-row: 10 / 12;">
+                    <div class="color-bar railroad"></div>
+                    Reading RR<br>$200
+                </div>
+                <div class="board-space" style="grid-column: 8 / 9; grid-row: 10 / 12;">
+                    <div class="color-bar light-blue"></div>
+                    Oriental Ave<br>$100
+                </div>
+                <div class="board-space" style="grid-column: 9 / 10; grid-row: 10 / 12;">Chance</div>
+                <div class="board-space" style="grid-column: 10 / 11; grid-row: 10 / 12;">
+                    <div class="color-bar light-blue"></div>
+                    Vermont Ave<br>$100
+                </div>
+                <div class="board-space" style="grid-column: 11 / 12; grid-row: 10 / 12;">
+                    <div class="color-bar light-blue"></div>
+                    Connecticut Ave<br>$120
+                </div>
+                
+                <!-- Row 2 (Right side) -->
+                <div class="board-space corner" style="grid-column: 10 / 12; grid-row: 1 / 3;">
+                    Just Visiting<br>/Jail
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 3 / 4;">
+                    <div class="color-bar pink"></div>
+                    St. Charles<br>$140
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 4 / 5;">
+                    <div class="color-bar utility"></div>
+                    Electric Co.<br>$150
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 5 / 6;">
+                    <div class="color-bar pink"></div>
+                    States Ave<br>$140
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 6 / 7;">
+                    <div class="color-bar pink"></div>
+                    Virginia Ave<br>$160
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 7 / 8;">
+                    <div class="color-bar railroad"></div>
+                    Pennsylvania RR<br>$200
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 8 / 9;">
+                    <div class="color-bar orange"></div>
+                    St. James<br>$180
+                </div>
+                <div class="board-space" style="grid-column: 10 / 12; grid-row: 9 / 10;">
+                    Community Chest
+                </div>
+                
+                <!-- Row 3 (Top) -->
+                <div class="board-space corner" style="grid-column: 10 / 12; grid-row: 1 / 3;">
+                    Free Parking
+                </div>
+                <div class="board-space" style="grid-column: 9 / 10; grid-row: 1 / 3;">
+                    <div class="color-bar red"></div>
+                    Kentucky Ave<br>$220
+                </div>
+                <div class="board-space" style="grid-column: 8 / 9; grid-row: 1 / 3;">
+                    Chance
+                </div>
+                <div class="board-space" style="grid-column: 7 / 8; grid-row: 1 / 3;">
+                    <div class="color-bar red"></div>
+                    Indiana Ave<br>$220
+                </div>
+                <div class="board-space" style="grid-column: 6 / 7; grid-row: 1 / 3;">
+                    <div class="color-bar red"></div>
+                    Illinois Ave<br>$240
+                </div>
+                <div class="board-space" style="grid-column: 5 / 6; grid-row: 1 / 3;">
+                    <div class="color-bar railroad"></div>
+                    B&O RR<br>$200
+                </div>
+                <div class="board-space" style="grid-column: 4 / 5; grid-row: 1 / 3;">
+                    <div class="color-bar yellow"></div>
+                    Atlantic Ave<br>$260
+                </div>
+                <div class="board-space" style="grid-column: 3 / 4; grid-row: 1 / 3;">
+                    <div class="color-bar yellow"></div>
+                    Ventnor Ave<br>$260
+                </div>
+                <div class="board-space" style="grid-column: 2 / 3; grid-row: 1 / 3;">
+                    <div class="color-bar utility"></div>
+                    Water Works<br>$150
+                </div>
+                <div class="board-space" style="grid-column: 1 / 2; grid-row: 1 / 3;">
+                    <div class="color-bar yellow"></div>
+                    Marvin Gardens<br>$280
+                </div>
+                
+                <!-- Row 4 (Left side) -->
+                <div class="board-space corner" style="grid-column: 1 / 3; grid-row: 1 / 3;">
+                    Go To Jail
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 3 / 4;">
+                    <div class="color-bar green"></div>
+                    Pacific Ave<br>$300
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 4 / 5;">
+                    <div class="color-bar green"></div>
+                    N. Carolina Ave<br>$300
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 5 / 6;">
+                    Community Chest
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 6 / 7;">
+                    <div class="color-bar green"></div>
+                    Pennsylvania Ave<br>$320
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 7 / 8;">
+                    <div class="color-bar railroad"></div>
+                    Short Line RR<br>$200
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 8 / 9;">
+                    Chance
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 9 / 10;">
+                    <div class="color-bar dark-blue"></div>
+                    Park Place<br>$350
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 10 / 11;">
+                    Luxury Tax<br>Pay $100
+                </div>
+                <div class="board-space" style="grid-column: 1 / 3; grid-row: 11 / 12;">
+                    <div class="color-bar dark-blue"></div>
+                    Boardwalk<br>$400
+                </div>
+
+                <!-- Center of board (logo) -->
+                <div style="grid-column: 3 / 10; grid-row: 3 / 10; display: flex; justify-content: center; align-items: center; font-size: 2em; font-weight: bold; color: var(--danger-color);">
+                    MONOPOLY
+                </div>
+            </div>
+        </section>
+
+        <section id="strategies">
+            <h2>Winning Strategies</h2>
+            
+            <h3>Property Acquisition</h3>
+            <ul>
+                <li><strong>Buy Orange and Red Properties:</strong> Properties from these sets are commonly landed on due to their position relative to Jail.</li>
+                <li><strong>Railroads are Valuable:</strong> Having all four railroads provides steady income.</li>
+                <li><strong>Complete Sets:</strong> Focus on completing color sets to build houses/hotels.</li>
+                <li><strong>Mortgage Wisely:</strong> Use mortgages to fund key property purchases or buildings.</li>
+            </ul>
+            
+            <h3>Building Strategy</h3>
+            <ul>
+                <li><strong>Build to 3 Houses:</strong> The rent jump from 2 to 3 houses is often the most significant.</li>
+                <li><strong>Beware the Housing Shortage:</strong> Sometimes it's strategic to keep houses instead of upgrading to hotels to create a housing shortage for opponents.</li>
+                <li><strong>Build Early:</strong> Build houses as soon as possible to start collecting higher rents.</li>
+            </ul>
+            
+            <h3>Money Management</h3>
+            <ul>
+                <li><strong>Keep Cash Reserves:</strong> Always maintain enough cash to pay potential rents or fees.</li>
+                <li><strong>Evaluate ROI:</strong> Calculate the return on investment before buying properties or buildings.</li>
+                <li><strong>Use Trading:</strong> Negotiate trades to complete sets and improve your position.</li>
+            </ul>
+            
+            <h3>Psychological Strategies</h3>
+            <ul>
+                <li><strong>Create Pressure:</strong> Build on properties that threaten opponents' cash position.</li>
+                <li><strong>Track Resources:</strong> Pay attention to other players' cash reserves and assets.</li>
+                <li><strong>Negotiate Effectively:</strong> Find win-win trades that benefit you more than your opponent.</li>
+            </ul>
+        </section>
+    </div>
+
+    <footer style="background-color: var(--dark-color); color: white; text-align: center; padding: 1rem; margin-top: 2rem;">
+        <p>&copy; 2025 Monopoly Companion | This is an unofficial fan site not affiliated with Hasbro</p>
+    </footer>
+
+    <script>
+        // Mortgage Calculator
+        function calculateMortgage() {
+            const propertyValue = parseFloat(document.getElementById('property-value').value);
+            if (isNaN(propertyValue)) return;
+            
+            const mortgageValue = propertyValue / 2;
+            const unmortgageValue = mortgageValue * 1.1;
+            
+            document.getElementById('mortgage-result').value = '$' + mortgageValue;
+            document.getElementById('unmortgage-result').value = '$' + unmortgageValue.toFixed(2);
+        }
+        
+        // Building Cost Calculator
+        function calculateBuildingCost() {
+            const propertySet = document.getElementById('property-set').value;
+            const numHouses = parseInt(document.getElementById('num-houses').value) || 0;
+            const numHotels = parseInt(document.getElementById('num-hotels').value) || 0;
+            
+            let houseCost;
+            switch (propertySet) {
+                case 'brown':
+                case 'light-blue':
+                    houseCost = 50;
+                    break;
+                case 'pink':
+                case 'orange':
+                    houseCost = 100;
+                    break;
+                case 'red':
+                case 'yellow':
+                    houseCost = 150;
+                    break;
+                case 'green':
+                case 'dark-blue':
+                    houseCost = 200;
+                    break;
+                default:
+                    houseCost = 0;
+            }
+            
+            const totalCost = (numHouses * houseCost) + (numHotels * (houseCost * 5));
+            document.getElementById('building-cost-result').value = '$' + totalCost;
+        }
+        
+        // Rent Probability Calculator (simplified)
+        function calculateProbability() {
+            const numPlayers = parseInt(document.getElementById('player-positions').value) || 4;
+            const propertiesInput = document.getElementById('your-properties').value;
+            
+            if (!propertiesInput) return;
+            
+            const properties = propertiesInput.split(',').map(p => p.trim());
+            const spaces = 40; // Total spaces on board
+            
+            // This is highly simplified and not accurate to real Monopoly probabilities
+            // which depend on dice distributions, jail, cards, etc.
+            const probability = (properties.length / spaces) * numPlayers * 100;
+            
+            document.getElementById('probability-result').value = 
+                probability.toFixed(1) + '% chance in next round';
+        }
+        
+        // Smooth scrolling for navigation
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
