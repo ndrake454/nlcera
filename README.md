@@ -86,11 +86,6 @@
 
 ## Implementation Notes for AI
 
-1. **Enhancing TinyMCE**
-   - TinyMCE is initialized with advanced options in `admin/protocol_edit.php`
-   - The Info Modal button is added via custom plugin in `window.tinyMCEPreInit.setup`
-   - Future plugins should follow this pattern
-
 2. **Protocol Display Styling**
    - Section styling is controlled via CSS classes in `frontend_header.php`
    - The protocol content template in `protocol_content.php` renders all sections
