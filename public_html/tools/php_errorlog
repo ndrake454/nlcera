@@ -1,0 +1,32 @@
+[01-May-2025 19:44:32 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[01-May-2025 19:44:33 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[01-May-2025 19:44:34 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[01-May-2025 19:44:40 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[01-May-2025 19:44:55 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[01-May-2025 19:45:05 UTC] PHP Parse error:  syntax error, unexpected variable "$page_title" in /home/customer/www/nlcera.firelight.academy/public_html/tools/igel.php on line 14
+[04-May-2025 05:58:54 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'includes/config.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 9
+[04-May-2025 05:59:07 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'includes/config.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 9
+[04-May-2025 06:00:51 UTC] PHP Fatal error:  Uncaught Error: Failed opening required 'includes/config.php' (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 9
+[04-May-2025 06:03:58 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "SITE_URL" in /home/customer/www/nlcera.firelight.academy/public_html/includes/frontend_header.php:7
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php(13): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/includes/frontend_header.php on line 7
+[04-May-2025 06:04:14 UTC] PHP Fatal error:  Uncaught Error: Undefined constant "SITE_URL" in /home/customer/www/nlcera.firelight.academy/public_html/includes/frontend_header.php:7
+Stack trace:
+#0 /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php(13): include()
+#1 {main}
+  thrown in /home/customer/www/nlcera.firelight.academy/public_html/includes/frontend_header.php on line 7
+[04-May-2025 00:06:22 America/Denver] PHP Warning:  include(includes/frontend_footer.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 1322
+[04-May-2025 00:06:22 America/Denver] PHP Warning:  include(): Failed opening 'includes/frontend_footer.php' for inclusion (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 1322
+[04-May-2025 00:06:38 America/Denver] PHP Warning:  include(includes/frontend_footer.php): Failed to open stream: No such file or directory in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 1322
+[04-May-2025 00:06:38 America/Denver] PHP Warning:  include(): Failed opening 'includes/frontend_footer.php' for inclusion (include_path='.:/usr/local/php82/pear') in /home/customer/www/nlcera.firelight.academy/public_html/tools/dose.php on line 1322
