@@ -1,4 +1,0 @@
-[03-May-2025 22:46:51 America/Denver] PHP Warning:  Trying to access array offset on value of type bool in /home/customer/www/nlcera.firelight.academy/public_html/protocol.php on line 178
-[03-May-2025 22:46:51 America/Denver] PHP Deprecated:  str_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/protocol.php on line 178
-[03-May-2025 22:46:51 America/Denver] PHP Warning:  Trying to access array offset on value of type bool in /home/customer/www/nlcera.firelight.academy/public_html/protocol.php on line 223
-[03-May-2025 22:46:51 America/Denver] PHP Deprecated:  str_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /home/customer/www/nlcera.firelight.academy/public_html/protocol.php on line 223
