@@ -889,3 +889,270 @@ img {
         break-inside: avoid;
     }
 }
+
+/* Main checklist container */
+.procedural-checklist {
+    background-color: #f5f7fb;
+    border-radius: 8px;
+    margin: 10px 0 25px 0;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+/* Checklist header */
+.procedural-checklist-header {
+    background-color: #106e9e;
+    color: white;
+    font-weight: bold;
+    font-size: 1.3rem;
+    padding: 15px 20px;
+    text-align: center;
+    margin: 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+/* Checklist subheader if needed */
+.procedural-checklist-subheader {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(16, 110, 158, 0.2);
+    color: #666;
+    font-size: 1rem;
+    padding: 10px 15px;
+    text-align: center;
+    margin: 0;
+}
+
+/* Section styling - card-like appearance */
+.procedural-checklist-section {
+    background-color: #fff;
+    border-radius: 8px;
+    margin: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.procedural-checklist-section:active {
+    transform: translateY(1px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Section header - bigger for touch, with checkbox */
+.procedural-checklist-section-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+    color: #212529;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    user-select: none;
+    min-height: 60px;
+}
+
+/* Section checkbox */
+.section-checkbox {
+    margin-right: 15px;
+}
+
+.section-checkbox input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    border: 2px solid #106e9e;
+    border-radius: 4px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+.section-title {
+    flex: 1;
+}
+
+/* Section chevron for expanding/collapsing */
+.section-chevron {
+    margin-left: 10px;
+    color: #adb5bd;
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+}
+
+.section-chevron.expanded {
+    transform: rotate(180deg);
+}
+
+/* Section content */
+.procedural-checklist-section-content {
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+/* Bullet list styling */
+.checklist-bullet-list {
+    list-style-type: none;
+    padding-left: 10px;
+    margin: 0;
+}
+
+/* Bullet item styling - more space between items for touch */
+.checklist-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 14px;
+    padding: 3px 0;
+}
+
+/* Bullet point styling */
+.checklist-bullet {
+    color: #106e9e;
+    font-size: 1.5rem;
+    line-height: 1;
+    margin-right: 12px;
+    margin-top: -2px;
+    flex-shrink: 0;
+}
+
+/* Item text styling */
+.checklist-item-text {
+    flex: 1;
+    line-height: 1.5;
+}
+
+/* Highlighted text (for important items) */
+.checklist-highlight {
+    color: #dc3545;
+    font-weight: bold;
+}
+
+/* Item with OR statement styling */
+.checklist-or {
+    color: #dc3545;
+    font-weight: bold;
+    margin: 0 4px;
+}
+
+/* Sub-bullet points */
+.checklist-sub-bullet-list {
+    list-style-type: none;
+    padding-left: 20px;
+    margin: 8px 0 0 0;
+}
+
+.checklist-sub-bullet-item {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+.checklist-sub-bullet {
+    color: #6c757d;
+    margin-right: 10px;
+}
+
+/* Support for acronym format from PDF with individual letters */
+.acronym-letter {
+    font-weight: bold;
+    color: #106e9e;
+    margin-right: 8px;
+    min-width: 18px;
+    display: inline-block;
+}
+
+/* Special styling for HEAVEN and LEMON mnemonics as seen in the PDF */
+.mnemonic-container {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.mnemonic-column {
+    flex: 0 0 48%;
+}
+
+.mnemonic-column:first-child {
+    border-right: 1px solid #eee;
+    padding-right: 15px;
+}
+
+.mnemonic-column:last-child {
+    padding-left: 15px;
+}
+
+.mnemonic-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+    color: #106e9e;
+}
+
+/* Print styles to maintain the checklist appearance in print view */
+@media print {
+    .procedural-checklist {
+        background-color: white;
+        border: 1px solid #ddd;
+    }
+    
+    .procedural-checklist-header {
+        background-color: #f1f1f1 !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+    
+    .procedural-checklist-section {
+        break-inside: avoid;
+        page-break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .section-checkbox input[type="checkbox"] {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        color-adjust: exact;
+    }
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 576px) {
+    .procedural-checklist-header {
+        font-size: 1.2rem;
+        padding: 12px 15px;
+    }
+    
+    .procedural-checklist-section {
+        margin: 10px 8px;
+    }
+    
+    .procedural-checklist-section-header {
+        padding: 12px;
+        font-size: 1rem;
+    }
+    
+    .procedural-checklist-section-content {
+        padding: 12px;
+    }
+    
+    .mnemonic-container {
+        flex-direction: column;
+    }
+    
+    .mnemonic-column {
+        flex: 0 0 100%;
+        margin-bottom: 15px;
+        border: none !important;
+        padding: 0 !important;
+    }
+    
+    .mnemonic-column:first-child {
+        border-bottom: 1px solid #eee !important;
+        padding-bottom: 15px !important;
+    }
+    
+    .mnemonic-column:last-child {
+        padding-top: 15px !important;
+    }
+}
