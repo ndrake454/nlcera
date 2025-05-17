@@ -1215,6 +1215,155 @@ img {
 .zoom-overlay.active {
   display: block;
 }
+
+/* Protocol Content Styling */
+
+/* General Protocol Content Container */
+.protocol-content {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 30px;
+    margin-bottom: 30px;
+}
+
+/* Section Styling */
+.protocol-content h2 {
+    color: #106e9e;
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 10px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.protocol-content h3 {
+    color: #343a40;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.protocol-content h4 {
+    color: #495057;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+/* Lists */
+.protocol-content ul, .protocol-content ol {
+    padding-left: 25px;
+    margin-bottom: 20px;
+}
+
+.protocol-content li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+/* Paragraphs */
+.protocol-content p {
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+/* Tables */
+.protocol-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: 1px solid #dee2e6;
+}
+
+.protocol-content th {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.protocol-content td {
+    border: 1px solid #dee2e6;
+    padding: 10px;
+    vertical-align: top;
+}
+
+/* Note boxes */
+.protocol-content .note-box {
+    background-color: #e8f4f8;
+    border-left: 4px solid #106e9e;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+/* Warning boxes */
+.protocol-content .warning-box {
+    background-color: #fff8e1;
+    border-left: 4px solid #ffc107;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+/* Danger/critical boxes */
+.protocol-content .danger-box {
+    background-color: #ffebee;
+    border-left: 4px solid #f44336;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+}
+
+/* Images */
+.protocol-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 4px;
+}
+
+/* Blockquotes */
+.protocol-content blockquote {
+    border-left: 4px solid #6c757d;
+    padding: 10px 20px;
+    margin: 0 0 20px;
+    font-size: 1rem;
+    background-color: #f8f9fa;
+}
+
+/* Links */
+.protocol-content a {
+    color: #106e9e;
+    text-decoration: none;
+}
+
+.protocol-content a:hover {
+    text-decoration: underline;
+}
+
+/* Print styles */
+@media print {
+    .protocol-content {
+        box-shadow: none;
+        padding: 0;
+    }
+    
+    .protocol-content h2 {
+        break-after: avoid;
+    }
+    
+    .protocol-content img {
+        break-inside: avoid;
+    }
+    
+    .protocol-content table {
+        break-inside: avoid;
+    }
+}
 </style>
 </head>
 <body>
