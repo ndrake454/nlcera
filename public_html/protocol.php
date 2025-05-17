@@ -1,9 +1,8 @@
 <?php
 /**
- * Protocol Page with PDF Diagram Support
+ * Simplified Protocol Display Page
  * 
- * This file displays a protocol with mobile-friendly PDF diagrams
- * Place this file in: /protocol.php
+ * Place this file in: /protocol_simple.php
  */
 
 // Include required files
@@ -26,10 +25,18 @@ if (!$protocol || (!$protocol['is_active'] && !$is_preview)) {
     exit;
 }
 
-// Get protocol sections
-$sections = get_protocol_sections($protocol_id);
+// Get protocol content
+$protocol_content = db_get_row(
+    "SELECT content FROM protocol_content WHERE protocol_id = ?",
+    [$protocol_id]
+);
 
-// Get protocol XML diagram
+$content = '';
+if ($protocol_content) {
+    $content = $protocol_content['content'];
+}
+
+// Get protocol diagram
 $diagram = db_get_row(
     "SELECT * FROM protocol_diagrams WHERE protocol_id = ?",
     [$protocol_id]
@@ -56,69 +63,7 @@ if (function_exists('is_logged_in') && is_logged_in()) {
 
 // For preview mode, only output the content
 if ($is_preview) {
-    if ($pdf_diagram && !empty($pdf_diagram['filename'])) {
-        // Get protocol URL
-        $protocol_url = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]";
-        $pdf_url = $protocol_url . '/assets/diagrams/' . $pdf_diagram['filename'];
-        
-        // Simple PDF.js viewer for preview
-        echo '<div id="pdf-viewer-container"></div>';
-        echo '<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>';
-        echo '<script>
-            pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js";
-            
-            const loadingTask = pdfjsLib.getDocument("' . $pdf_url . '");
-            loadingTask.promise.then(function(pdf) {
-                const container = document.getElementById("pdf-viewer-container");
-                
-                for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                    pdf.getPage(pageNum).then(function(page) {
-                        const scale = 2.5; // Higher resolution for preview
-                        const viewport = page.getViewport({scale: scale});
-                        
-                        const wrapper = document.createElement("div");
-                        wrapper.className = "pdf-page-wrapper";
-                        
-                        const canvas = document.createElement("canvas");
-                        wrapper.appendChild(canvas);
-                        container.appendChild(wrapper);
-                        
-                        const context = canvas.getContext("2d");
-                        canvas.height = viewport.height;
-                        canvas.width = viewport.width;
-                        
-                        const renderContext = {
-                            canvasContext: context,
-                            viewport: viewport
-                        };
-                        
-                        page.render(renderContext);
-                    });
-                }
-            });
-        </script>';
-        echo '<style>
-            #pdf-viewer-container {
-                max-width: 800px;
-                margin: 0 auto;
-                padding: 20px;
-            }
-            .pdf-page-wrapper {
-                margin-bottom: 20px;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-                background: white;
-            }
-            .pdf-page-wrapper canvas {
-                display: block;
-                width: 100%;
-                height: auto;
-            }
-        </style>';
-    } elseif ($diagram && !empty($diagram['html_content'])) {
-        echo $diagram['html_content'];
-    } else {
-        echo '<div class="alert alert-info m-3">No diagram content available for preview.</div>';
-    }
+    echo $content;
     exit;
 }
 
@@ -141,7 +86,7 @@ include 'includes/frontend_header.php';
                 <i class="ti ti-pencil me-1"></i> You are logged in as an administrator.
             </div>
             <div>
-                <a href="<?= $base_url ?>/admin/protocol_edit.php?id=<?= $protocol_id ?>" class="btn btn-primary btn-sm me-2">
+                <a href="<?= $base_url ?>/admin/protocol_edit_simple.php?id=<?= $protocol_id ?>" class="btn btn-primary btn-sm me-2">
                     <i class="ti ti-edit me-1"></i> Edit Content
                 </a>
                 <a href="<?= $base_url ?>/admin/protocol_edit_drawio.php?id=<?= $protocol_id ?>" class="btn btn-success btn-sm">
@@ -152,7 +97,6 @@ include 'includes/frontend_header.php';
     </div>
 <?php endif; ?>
 
-<div class="container">
 <div class="protocol-header bg-primary text-white">
     <div class="container">
         <div class="row align-items-center">
@@ -170,9 +114,11 @@ include 'includes/frontend_header.php';
         </div>
     </div>
 </div>
+
+<div class="container">
     <?php if ($pdf_diagram && !empty($pdf_diagram['filename'])): ?>
         <!-- Display PDF using PDF.js -->
-        <div class="protocol-diagram mt-4">
+        <div class="protocol-diagram mt-4 mb-5">
             <div class="pdf-container">
                 <!-- PDF viewer container with an outer scrollable wrapper -->
                 <div class="pdf-viewer-scrollable-wrapper">
@@ -195,18 +141,9 @@ include 'includes/frontend_header.php';
                         <div id="error-container" class="mt-4"></div>
                     </div>
                 </div>
-                
-
             </div>
         </div>
-            <!-- Protocol Content Sections -->
-    <?php if (empty($sections)): ?>
 
-    <?php else: ?>
-        <!-- Include the protocol_content.php to display sections -->
-        <?php include 'includes/protocol_content.php'; ?>
-    <?php endif; ?>
-    
         <!-- Include PDF.js from CDN -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js"></script>
         
@@ -217,11 +154,10 @@ include 'includes/frontend_header.php';
                 margin: 0 auto;
             }
             
-            /* This wrapper makes the content scrollable on mobile */
             .pdf-viewer-scrollable-wrapper {
                 width: 100%;
                 overflow-x: auto;
-                -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+                -webkit-overflow-scrolling: touch;
             }
             
             .pdf-viewer {
@@ -229,7 +165,7 @@ include 'includes/frontend_header.php';
                 background: #f5f5f5;
                 border: 1px solid #dee2e6;
                 border-radius: 0.375rem;
-                overflow: visible; /* Allow content to be visible outside container */
+                overflow: visible;
                 min-height: 500px;
                 padding: 10px;
                 position: relative;
@@ -252,12 +188,11 @@ include 'includes/frontend_header.php';
             }
             
             .pdf-page-wrapper canvas {
-                display: inline-block; /* Allow centering */
+                display: inline-block;
                 max-width: 100%;
-                height: auto !important; /* Force maintain aspect ratio */
+                height: auto !important;
             }
             
-            /* Mobile-friendly styles */
             @media (max-width: 768px) {
                 .pdf-viewer {
                     min-height: 400px;
@@ -272,17 +207,13 @@ include 'includes/frontend_header.php';
         
         <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Set PDF.js worker path
+            // Initialize PDF viewer
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
             
-            // PDF URL
             const pdfUrl = window.location.origin + '/assets/diagrams/<?= $pdf_diagram['filename'] ?>';
             const container = document.getElementById('pdf-viewer-container');
             const errorContainer = document.getElementById('error-container');
-            
-            // Remove loading indicator and fullscreen button for initialization
             const loadingIndicator = document.getElementById('loading-indicator');
-            const fullscreenBtn = document.querySelector('.fullscreen-btn-container');
             
             // Detect if we're on mobile
             const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -314,14 +245,13 @@ include 'includes/frontend_header.php';
                         const aspectRatio = viewport.width / viewport.height;
                         
                         // Calculate scale based on container width, maintaining aspect ratio
-                        // Use higher resolution for better quality
                         let scale;
                         if (isMobile) {
                             // For mobile, fit width but use higher resolution
-                            scale = (containerWidth * 0.95) / viewport.width * 1.5; // 1.5x higher resolution
+                            scale = (containerWidth * 0.95) / viewport.width * 1.5;
                         } else {
                             // For desktop, use even higher resolution
-                            scale = Math.min(3.0, containerWidth / viewport.width * 1.5); // 3.0x higher max resolution
+                            scale = Math.min(3.0, containerWidth / viewport.width * 1.5);
                         }
                         
                         // Create scaled viewport
@@ -368,7 +298,7 @@ include 'includes/frontend_header.php';
         </script>
     <?php elseif ($diagram && !empty($diagram['xml_content'])): ?>
         <!-- Fallback to Draw.io viewer if PDF is not available -->
-        <div class="protocol-diagram mt-4">
+        <div class="protocol-diagram mt-4 mb-5">
             <div id="diagram-container" style="width: 100%; min-height: 600px; border: 1px solid #dee2e6;">
                 <div id="loading-indicator" class="text-center py-5">
                     <div class="spinner-border text-primary" role="status">
@@ -380,116 +310,63 @@ include 'includes/frontend_header.php';
             
             <!-- Store the XML content in a hidden div -->
             <div id="diagram-xml-content" style="display: none;"><?= htmlspecialchars($diagram['xml_content']) ?></div>
+        </div>
+        
+        <!-- Include the Draw.io viewer script -->
+        <script src="https://app.diagrams.net/js/viewer.min.js"></script>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const container = document.getElementById('diagram-container');
+            const xmlContent = document.getElementById('diagram-xml-content');
             
-            <!-- Show a message that legacy format is being used -->
-            <div class="alert alert-warning mt-2">
-                <i class="ti ti-alert-triangle me-2"></i>
-                This protocol is using legacy diagram format. It will be converted to a faster PDF format on the next edit.
-            </div>
+            if (!container || !xmlContent) {
+                return;
+            }
             
-            <!-- Include the Draw.io viewer script -->
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                console.log('Protocol page loaded, initializing diagram...');
+            try {
+                // Get the XML content
+                const xml = xmlContent.textContent || xmlContent.innerText;
                 
-                // Initialize diagram viewer after a short delay
-                setTimeout(function() {
-                    const container = document.getElementById('diagram-container');
-                    const xmlContent = document.getElementById('diagram-xml-content');
-                    
-                    if (!container || !xmlContent) {
-                        console.error('Diagram container or XML content not found');
-                        return;
-                    }
-                    
-                    try {
-                        // Get the XML content
-                        const xml = xmlContent.textContent || xmlContent.innerText;
-                        console.log('Got XML content, length:', xml.length);
-                        
-                        // Clear the container
-                        container.innerHTML = '';
-                        
-                        // Create iframe for the viewer
-                        const iframe = document.createElement('iframe');
-                        iframe.style.width = '100%';
-                        iframe.style.height = '600px';
-                        iframe.style.border = 'none';
-                        
-                        // Append the iframe to the container
-                        container.appendChild(iframe);
-                        
-                        // Set the source for the iframe - use a simpler viewer
-                        iframe.src = 'https://viewer.diagrams.net/?highlight=0000ff&nav=1&embed=1';
-                        
-                        console.log('Diagram viewer iframe created, waiting for load event');
-                        
-                        // Wait for the iframe to load
-                        iframe.onload = function() {
-                            console.log('Iframe loaded, sending diagram data...');
-                            
-                            // Send the XML to the iframe using postMessage with a delay
-                            setTimeout(function() {
-                                console.log('Sending XML to viewer');
-                                try {
-                                    // Try various formats that diagrams.net might accept
-                                    const plainXml = xml.trim();
-                                    
-                                    // First attempt: Send as is
-                                    iframe.contentWindow.postMessage(plainXml, '*');
-                                    
-                                    // Second attempt (after a delay): Try with mxfile wrapper if needed
-                                    setTimeout(function() {
-                                        if (!plainXml.includes('<mxfile')) {
-                                            console.log('XML might need mxfile wrapper, trying alternative format');
-                                            const wrappedXml = `<mxfile modified="${new Date().toISOString()}">\n${plainXml}\n</mxfile>`;
-                                            iframe.contentWindow.postMessage(wrappedXml, '*');
-                                        }
-                                    }, 2000);
-                                } catch (e) {
-                                    console.error('Error sending XML to viewer:', e);
-                                }
-                            }, 1000);
-                            
-                            // Listen for messages from the iframe
-                            window.addEventListener('message', function(evt) {
-                                try {
-                                    if (typeof evt.data === 'string') {
-                                        const msg = JSON.parse(evt.data);
-                                        if (msg.event === 'configure') {
-                                            console.log('Diagram viewer configured');
-                                        } else if (msg.event === 'load') {
-                                            console.log('Diagram loaded successfully');
-                                        } else if (msg.event === 'error') {
-                                            console.error('Diagram error:', msg.message);
-                                            // Show error in container
-                                            const errorDiv = document.createElement('div');
-                                            errorDiv.className = 'alert alert-danger mt-3';
-                                            errorDiv.innerHTML = `<i class="ti ti-alert-triangle me-2"></i> Error loading diagram: ${msg.message}`;
-                                            container.appendChild(errorDiv);
-                                        }
-                                    }
-                                } catch (e) {
-                                    // Not a JSON message, ignore
-                                }
-                            });
-                        };
-                    } catch (error) {
-                        console.error('Error initializing diagram viewer:', error);
-                        container.innerHTML = '<div class="alert alert-danger">Error loading diagram. Please try refreshing the page.</div>';
-                    }
-                }, 500); // Short delay to ensure DOM is ready
-            });
-            </script>
+                // Clear the container
+                container.innerHTML = '';
+                
+                // Create iframe for the viewer
+                const iframe = document.createElement('iframe');
+                iframe.style.width = '100%';
+                iframe.style.height = '600px';
+                iframe.style.border = 'none';
+                
+                // Append the iframe to the container
+                container.appendChild(iframe);
+                
+                // Set the source for the iframe - use a simpler viewer
+                iframe.src = 'https://viewer.diagrams.net/?highlight=0000ff&nav=1&embed=1';
+                
+                // Wait for the iframe to load
+                iframe.onload = function() {
+                    // Send the XML to the iframe
+                    setTimeout(function() {
+                        iframe.contentWindow.postMessage(xml, '*');
+                    }, 1000);
+                };
+            } catch (e) {
+                console.error('Failed to initialize diagram viewer:', e);
+                container.innerHTML = '<div class="alert alert-danger">Error loading diagram. Please try refreshing the page.</div>';
+            }
+        });
+        </script>
+    <?php endif; ?>
+
+    <?php if (empty($content)): ?>
+        <div class="alert alert-info mt-4">
+            This protocol is currently being developed. Check back soon.
         </div>
     <?php else: ?>
-        <!-- No diagram available -->
-        <div class="alert alert-info mt-4">
-            <i class="ti ti-info-circle me-2"></i>
-            No diagram is available for this protocol.
+        <div class="protocol-content mt-4">
+            <?= $content ?>
         </div>
     <?php endif; ?>
-    
+
     <!-- Protocol Metadata -->
     <div class="protocol-metadata mt-5 mb-4">
         <div class="card">
@@ -510,54 +387,6 @@ include 'includes/frontend_header.php';
         </div>
     </div>
 </div>
-
-<!-- Print Styles -->
-<style>
-@media print {
-    header, footer, nav, .admin-edit-bar, .btn, .breadcrumb {
-        display: none !important;
-    }
-    
-    .protocol-header {
-        background-color: #f8f9fa !important;
-        color: #212529 !important;
-        print-color-adjust: exact;
-    }
-    
-    body {
-        padding-top: 0 !important;
-    }
-    
-    .container {
-        max-width: 100% !important;
-        width: 100% !important;
-    }
-    
-    .pdf-container, #diagram-container {
-        page-break-inside: avoid;
-        border: none !important;
-    }
-    
-    /* Print all PDF pages properly */
-    .pdf-page-wrapper {
-        page-break-inside: avoid;
-        break-inside: avoid;
-        margin: 0 auto 20px auto !important;
-        box-shadow: none !important;
-    }
-    
-    /* Remove decorative elements */
-    .alert-warning, .fullscreen-btn-container {
-        display: none !important;
-    }
-    
-    /* Ensure all protocol sections print properly */
-    .protocol-section {
-        page-break-inside: avoid;
-        break-inside: avoid;
-    }
-}
-</style>
 
 <?php
 // Include footer
